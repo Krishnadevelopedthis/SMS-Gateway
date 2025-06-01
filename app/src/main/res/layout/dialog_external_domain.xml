@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="External Domain Configuration"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <Switch
+        android:id="@+id/enableExternalDomainSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enable External Domain Access"
+        android:layout_marginBottom="16dp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Domain (e.g., sms.yourdomain.com)">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/domainEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textUri"
+            android:maxLines="1" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/instructionsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Instructions will appear here..."
+        android:textSize="12sp"
+        android:textColor="@android:color/darker_gray"
+        android:padding="8dp"
+        android:background="#F5F5F5"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="⚠️ Note: You need to set up a reverse proxy server to use external domain access. This allows your SMS Gateway to be accessible from anywhere on the internet."
+        android:textSize="11sp"
+        android:textColor="@android:color/holo_orange_dark"
+        android:padding="8dp" />
+
+</LinearLayout>
