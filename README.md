@@ -1,5 +1,7 @@
 # SMS Gateway Android Application
 
+![SMS Gateway Banner](images/banner.png)
+
 A comprehensive Android application that turns your Android device into an SMS gateway, allowing you to send SMS messages through a REST API using the device's cellular connection.
 
 ## Features
@@ -99,6 +101,8 @@ curl -X POST https://sms.yourdomain.com/api/send \
 > 💡 **Want external access?** See the [Custom Domain Setup](#custom-domain-setup-external-access) section below to make your SMS Gateway accessible from anywhere on the internet!
 
 ## Architecture
+
+![How It Works](images/how_its_work.png)
 
 ### Core Components
 
