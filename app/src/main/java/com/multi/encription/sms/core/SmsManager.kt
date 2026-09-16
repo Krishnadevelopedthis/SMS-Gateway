@@ -68,51 +68,75 @@ class SmsManager(private val context: Context) {
         }
     }
     
-    private fun sendSmsInternal(smsId: Long, phoneNumber: String, message: String) {
-        try {
-            // Create pending intents for sent and delivered status
-            val sentIntent = createSentIntent(smsId)
-            val deliveredIntent = createDeliveredIntent(smsId)
-            
-            // Split message if it's too long
-            val parts = smsManager.divideMessage(message)
-            
-            if (parts.size == 1) {
-                // Single part message
-                smsManager.sendTextMessage(
-                    phoneNumber,
-                    null,
-                    message,
-                    sentIntent,
-                    deliveredIntent
-                )
-            } else {
-                // Multi-part message
-                val sentIntents = arrayListOf<PendingIntent>()
-                val deliveredIntents = arrayListOf<PendingIntent>()
-                
-                repeat(parts.size) {
-                    sentIntents.add(sentIntent)
-                    deliveredIntents.add(deliveredIntent)
-                }
-                
-                smsManager.sendMultipartTextMessage(
-                    phoneNumber,
-                    null,
-                    parts,
-                    sentIntents,
-                    deliveredIntents
-                )
+    private fun sendSmsInternal(
+    smsId: Long,
+    phoneNumber: String,
+    message: String
+) {
+    try {
+        Log.i(
+            TAG,
+            "CALLING SMS API: id=$smsId phone=$phoneNumber length=${message.length}"
+        )
+
+        val sentIntent = createSentIntent(smsId)
+        val deliveredIntent = createDeliveredIntent(smsId)
+        val parts = smsManager.divideMessage(message)
+
+        if (parts.size == 1) {
+            smsManager.sendTextMessage(
+                phoneNumber,
+                null,
+                message,
+                sentIntent,
+                deliveredIntent
+            )
+
+            Log.i(
+                TAG,
+                "SMS API RETURNED: id=$smsId phone=$phoneNumber"
+            )
+        } else {
+            Log.i(
+                TAG,
+                "Sending multipart SMS: id=$smsId parts=${parts.size}"
+            )
+
+            val sentIntents = arrayListOf<PendingIntent>()
+            val deliveredIntents = arrayListOf<PendingIntent>()
+
+            repeat(parts.size) {
+                sentIntents.add(sentIntent)
+                deliveredIntents.add(deliveredIntent)
             }
-            
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to send SMS internally", e)
-            // Update status to failed
-            CoroutineScope(Dispatchers.IO).launch {
-                updateSmsStatus(smsId, SmsStatus.FAILED, e.message)
-            }
+
+            smsManager.sendMultipartTextMessage(
+                phoneNumber,
+                null,
+                parts,
+                sentIntents,
+                deliveredIntents
+            )
+
+            Log.i(TAG, "Multipart SMS API RETURNED: id=$smsId")
+        }
+
+    } catch (e: Exception) {
+        Log.e(
+            TAG,
+            "SMS API FAILED: id=$smsId phone=$phoneNumber",
+            e
+        )
+
+        CoroutineScope(Dispatchers.IO).launch {
+            updateSmsStatus(
+                smsId,
+                SmsStatus.FAILED,
+                e.message
+            )
         }
     }
+}
     
     private fun createSentIntent(smsId: Long): PendingIntent {
         val intent = Intent(SMS_SENT_ACTION).apply {
