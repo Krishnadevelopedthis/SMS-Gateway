@@ -88,10 +88,14 @@ class SmsGatewayService : Service() {
 
         if (configManager.isServerEnabled) {
             startApiServer()
+        } else {
+            stopApiServer()
         }
 
         if (configManager.isCloudConnectionEnabled) {
             startCloudConnection()
+        } else {
+            stopCloudConnection()
         }
 
         startCleanupTask()
