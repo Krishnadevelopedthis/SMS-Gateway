@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -13,7 +14,10 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Header Section -->
+        <!-- ===================================================== -->
+        <!-- HEADER / GATEWAY CONFIGURATION                        -->
+        <!-- ===================================================== -->
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,6 +31,8 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
+                <!-- TITLE -->
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -35,6 +41,10 @@
                     android:textStyle="bold"
                     android:gravity="center"
                     android:layout_marginBottom="16dp" />
+
+                <!-- ================================================= -->
+                <!-- LOCAL API SERVER                                  -->
+                <!-- ================================================= -->
 
                 <TextView
                     android:id="@+id/serverStatusText"
@@ -85,7 +95,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
 
                     <Button
                         android:id="@+id/testApiButton"
@@ -108,11 +119,75 @@
 
                 </LinearLayout>
 
+                <!-- ================================================= -->
+                <!-- CLOUD SMS GATEWAY                                 -->
+                <!-- ================================================= -->
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="☁️ Cloud SMS Gateway"
+                            android:textSize="17sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:id="@+id/cloudGatewayStatusText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Cloud Status: Disabled"
+                            android:textSize="14sp"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:id="@+id/cloudGatewayUrlText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Gateway: Not configured"
+                            android:textSize="12sp"
+                            android:fontFamily="monospace"
+                            android:padding="6dp"
+                            android:layout_marginBottom="8dp" />
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/cloudGatewayToggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Enable Cloud Gateway"
+                            android:layout_marginBottom="8dp" />
+
+                        <Button
+                            android:id="@+id/cloudGatewaySettingsButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Cloud Gateway Settings"
+                            style="@style/Widget.Material3.Button.OutlinedButton" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- SMS History Section -->
+        <!-- ===================================================== -->
+        <!-- SMS HISTORY                                           -->
+        <!-- ===================================================== -->
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -148,6 +223,10 @@
         </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
+
+    <!-- ========================================================= -->
+    <!-- SEND SMS FAB                                               -->
+    <!-- ========================================================= -->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/sendSmsFab"
