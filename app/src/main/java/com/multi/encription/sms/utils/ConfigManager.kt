@@ -5,11 +5,13 @@ import android.content.SharedPreferences
 import java.util.UUID
 
 class ConfigManager(context: Context) {
-    
-    private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-    
+
+    private val prefs: SharedPreferences =
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
     companion object {
         private const val PREFS_NAME = "sms_gateway_config"
+
         private const val KEY_API_KEY = "api_key"
         private const val KEY_SERVER_PORT = "server_port"
         private const val KEY_SERVER_ENABLED = "server_enabled"
@@ -22,44 +24,58 @@ class ConfigManager(context: Context) {
         private const val KEY_EXTERNAL_DOMAIN = "external_domain"
         private const val KEY_USE_EXTERNAL_DOMAIN = "use_external_domain"
 
+        // Cloud Gateway
+        private const val KEY_CLOUD_GATEWAY_URL = "cloud_gateway_url"
+        private const val KEY_CLOUD_GATEWAY_API_KEY = "cloud_gateway_api_key"
+        private const val KEY_CLOUD_CONNECTION_ENABLED = "cloud_connection_enabled"
+
         const val DEFAULT_PORT = 8080
         const val DEFAULT_RATE_LIMIT_PER_MINUTE = 10
         const val DEFAULT_RATE_LIMIT_PER_HOUR = 100
         const val DEFAULT_AUTO_DELETE_DAYS = 30
+
+        const val DEFAULT_CLOUD_GATEWAY_URL =
+            "wss://sms-gateway-y38d.onrender.com/ws/phone"
     }
-    
+
     var apiKey: String
         get() = prefs.getString(KEY_API_KEY, null) ?: generateAndSaveApiKey()
         set(value) = prefs.edit().putString(KEY_API_KEY, value).apply()
-    
+
     var serverPort: Int
         get() = prefs.getInt(KEY_SERVER_PORT, DEFAULT_PORT)
         set(value) = prefs.edit().putInt(KEY_SERVER_PORT, value).apply()
-    
+
     var isServerEnabled: Boolean
         get() = prefs.getBoolean(KEY_SERVER_ENABLED, false)
         set(value) = prefs.edit().putBoolean(KEY_SERVER_ENABLED, value).apply()
-    
+
     var isRateLimitEnabled: Boolean
         get() = prefs.getBoolean(KEY_RATE_LIMIT_ENABLED, true)
         set(value) = prefs.edit().putBoolean(KEY_RATE_LIMIT_ENABLED, value).apply()
-    
+
     var rateLimitPerMinute: Int
-        get() = prefs.getInt(KEY_RATE_LIMIT_PER_MINUTE, DEFAULT_RATE_LIMIT_PER_MINUTE)
+        get() = prefs.getInt(
+            KEY_RATE_LIMIT_PER_MINUTE,
+            DEFAULT_RATE_LIMIT_PER_MINUTE
+        )
         set(value) = prefs.edit().putInt(KEY_RATE_LIMIT_PER_MINUTE, value).apply()
-    
+
     var rateLimitPerHour: Int
-        get() = prefs.getInt(KEY_RATE_LIMIT_PER_HOUR, DEFAULT_RATE_LIMIT_PER_HOUR)
+        get() = prefs.getInt(
+            KEY_RATE_LIMIT_PER_HOUR,
+            DEFAULT_RATE_LIMIT_PER_HOUR
+        )
         set(value) = prefs.edit().putInt(KEY_RATE_LIMIT_PER_HOUR, value).apply()
-    
+
     var isAutoDeleteOldSmsEnabled: Boolean
         get() = prefs.getBoolean(KEY_AUTO_DELETE_OLD_SMS, true)
         set(value) = prefs.edit().putBoolean(KEY_AUTO_DELETE_OLD_SMS, value).apply()
-    
+
     var autoDeleteDays: Int
         get() = prefs.getInt(KEY_AUTO_DELETE_DAYS, DEFAULT_AUTO_DELETE_DAYS)
         set(value) = prefs.edit().putInt(KEY_AUTO_DELETE_DAYS, value).apply()
-    
+
     var isNotificationEnabled: Boolean
         get() = prefs.getBoolean(KEY_NOTIFICATION_ENABLED, true)
         set(value) = prefs.edit().putBoolean(KEY_NOTIFICATION_ENABLED, value).apply()
@@ -71,6 +87,35 @@ class ConfigManager(context: Context) {
     var useExternalDomain: Boolean
         get() = prefs.getBoolean(KEY_USE_EXTERNAL_DOMAIN, false)
         set(value) = prefs.edit().putBoolean(KEY_USE_EXTERNAL_DOMAIN, value).apply()
+
+    // ============================================================
+    // Cloud Gateway Configuration
+    // ============================================================
+
+    var cloudGatewayUrl: String
+        get() = prefs.getString(
+            KEY_CLOUD_GATEWAY_URL,
+            DEFAULT_CLOUD_GATEWAY_URL
+        ) ?: DEFAULT_CLOUD_GATEWAY_URL
+        set(value) = prefs.edit()
+            .putString(KEY_CLOUD_GATEWAY_URL, value)
+            .apply()
+
+    var cloudGatewayApiKey: String
+        get() = prefs.getString(KEY_CLOUD_GATEWAY_API_KEY, "") ?: ""
+        set(value) = prefs.edit()
+            .putString(KEY_CLOUD_GATEWAY_API_KEY, value)
+            .apply()
+
+    var isCloudConnectionEnabled: Boolean
+        get() = prefs.getBoolean(KEY_CLOUD_CONNECTION_ENABLED, false)
+        set(value) = prefs.edit()
+            .putBoolean(KEY_CLOUD_CONNECTION_ENABLED, value)
+            .apply()
+
+    // ============================================================
+    // Existing API URL
+    // ============================================================
 
     fun getApiBaseUrl(localIp: String): String {
         return if (useExternalDomain && externalDomain.isNotBlank()) {
@@ -85,19 +130,21 @@ class ConfigManager(context: Context) {
     }
 
     private fun generateAndSaveApiKey(): String {
-        val newApiKey = "sms_" + UUID.randomUUID().toString().replace("-", "")
+        val newApiKey =
+            "sms_" + UUID.randomUUID().toString().replace("-", "")
+
         apiKey = newApiKey
         return newApiKey
     }
-    
+
     fun regenerateApiKey(): String {
         return generateAndSaveApiKey()
     }
-    
+
     fun resetToDefaults() {
         prefs.edit().clear().apply()
     }
-    
+
     fun exportConfig(): Map<String, Any> {
         return mapOf(
             "api_key" to apiKey,
@@ -108,7 +155,9 @@ class ConfigManager(context: Context) {
             "rate_limit_per_hour" to rateLimitPerHour,
             "auto_delete_old_sms" to isAutoDeleteOldSmsEnabled,
             "auto_delete_days" to autoDeleteDays,
-            "notification_enabled" to isNotificationEnabled
+            "notification_enabled" to isNotificationEnabled,
+            "cloud_gateway_url" to cloudGatewayUrl,
+            "cloud_connection_enabled" to isCloudConnectionEnabled
         )
     }
 }
