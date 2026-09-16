@@ -8,3 +8,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Python cache
+__pycache__/
+*.pyc
+cloud-gateway/.venv/
