@@ -137,31 +137,34 @@ class SmsManager(private val context: Context) {
         }
     }
 }
-    
-    private fun createSentIntent(smsId: Long): PendingIntent {
-        val intent = Intent(SMS_SENT_ACTION).apply {
-            putExtra(EXTRA_SMS_ID, smsId)
-        }
-        return PendingIntent.getBroadcast(
-            context,
-            smsId.toInt(),
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
+   private fun createSentIntent(smsId: Long): PendingIntent {
+     val intent = Intent(context, SmsStatusReceiver::class.java).apply {
+        action = SMS_SENT_ACTION
+        putExtra(EXTRA_SMS_ID, smsId)
+      }
+
+     return PendingIntent.getBroadcast(
+          context,
+          smsId.toInt(),
+          intent,
+          PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+      )
     }
     
     private fun createDeliveredIntent(smsId: Long): PendingIntent {
-        val intent = Intent(SMS_DELIVERED_ACTION).apply {
-            putExtra(EXTRA_SMS_ID, smsId)
+     val intent = Intent(context, SmsStatusReceiver::class.java).apply {
+        action = SMS_DELIVERED_ACTION
+        putExtra(EXTRA_SMS_ID, smsId)
         }
+
         return PendingIntent.getBroadcast(
-            context,
-            smsId.toInt() + 10000, // Offset to avoid conflicts
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+             context,
+             smsId.toInt() + 10000,
+             intent,
+             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
-    
+
     suspend fun updateSmsStatus(smsId: Long, status: SmsStatus, errorMessage: String? = null) {
         try {
             val sms = smsDao.getSmsById(smsId)
