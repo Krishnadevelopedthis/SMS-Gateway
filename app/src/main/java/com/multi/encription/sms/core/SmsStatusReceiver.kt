@@ -32,7 +32,7 @@ class SmsStatusReceiver : BroadcastReceiver() {
         CoroutineScope(Dispatchers.IO).launch {
             when (intent.action) {
                 com.multi.encription.sms.core.SmsManager.SMS_SENT_ACTION -> {
-                    handleSmsSent(resultCode, smsId, smsManager)
+                    handleSmsSent(resultCode, smsId, smsManager, intent)
                 }
                 com.multi.encription.sms.core.SmsManager.SMS_DELIVERED_ACTION -> {
                     handleSmsDelivered(smsId, smsManager)
@@ -41,7 +41,7 @@ class SmsStatusReceiver : BroadcastReceiver() {
         }
     }
     
-    private suspend fun handleSmsSent(resultCode: Int, smsId: Long, smsManager: com.multi.encription.sms.core.SmsManager) {
+    private suspend fun handleSmsSent(resultCode: Int, smsId: Long, smsManager: com.multi.encription.sms.core.SmsManager,intent: Intent) {
         val status: SmsStatus
         val errorMessage: String?
 
@@ -73,8 +73,19 @@ class SmsStatusReceiver : BroadcastReceiver() {
             }
             else -> {
                 status = SmsStatus.FAILED
-                errorMessage = "Unknown error (code: $resultCode)"
-                Log.e(TAG, "SMS failed - Unknown error: ID=$smsId, Code=$resultCode")
+
+                val extras = intent.extras
+                val extraDump = extras?.keySet()?.joinToString(", ") { key ->
+                    "$key=${extras.get(key)}"
+                } ?: "no extras"
+
+                errorMessage =
+                    "Unknown error (code: $resultCode), extras: $extraDump"
+
+                Log.e(
+                    TAG,
+                    "SMS failed: ID=$smsId, Code=$resultCode, Extras=$extraDump"
+                        )
             }
         }
 
